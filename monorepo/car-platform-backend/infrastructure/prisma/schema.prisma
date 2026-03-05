@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model sysUser {
+  id            String   @id @default(uuid())
+  username      String   @unique
+  passwordHash  String
+  email         String   @unique
+  status        String
+
+  createdBy     String?
+  createdTime   DateTime @default(now())
+  modifiedBy    String?
+  modifiedTime  DateTime?
+}
+
+model cmCar {
+  id            String   @id @default(uuid())
+  name          String
+  brand         String
+  model         String
+  basePrice     Float
+  status        String
+
+  details       cmCarDetail[]
+  prices        cmCarPrice[]
+
+  createdBy     String?
+  createdTime   DateTime @default(now())
+  modifiedBy    String?
+  modifiedTime  DateTime?
+
+  @@index([brand, model])
+}
+
+model cmCarDetail {
+  id            String   @id @default(uuid())
+  carId         String
+  color         String
+  engine        String
+  tire          String
+  shell         String
+  description   String?
+
+  car           cmCar @relation(fields: [carId], references: [id])
+
+  createdBy     String?
+  createdTime   DateTime @default(now())
+  modifiedBy    String?
+  modifiedTime  DateTime?
+
+  @@index([carId])
+}
+
+model cmCarPrice {
+  id            String   @id @default(uuid())
+  carId         String
+  price         Float
+  validFrom     DateTime
+  validTo       DateTime?
+
+  car           cmCar @relation(fields: [carId], references: [id])
+}

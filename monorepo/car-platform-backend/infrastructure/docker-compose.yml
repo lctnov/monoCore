@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  api:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: car_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+
+  redis:
+    image: redis:7
+
+  kafka:
+    image: bitnami/kafka
